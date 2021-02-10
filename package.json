@@ -11,11 +11,12 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "rimraf ./dist",
     "dev": "rollup -cw",
     "test:watch": "jest --watchAll",
     "check": "svelte-check --diagnostic-sources \"js,svelte\"",
     "check:watch": "svelte-check --watch --diagnostic-sources \"js,svelte\"",
+    "prepare": "npm run check",
+    "prebuild": "rimraf ./dist",
     "build": "rollup -c"
   },
   "keywords": [

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onDestroy, onMount } from 'svelte';
+  import { getContext, onDestroy } from 'svelte';
   import { FORM } from './contexts';
   import type { Touched, Errors } from './types';
 

@@ -103,6 +103,20 @@ export function useForm(opts: FormOpts): FormData {
     runValidations(_values)
   }
 
+  function attachListeners(node: HTMLElement, listeners: { [key: string]: (e: Event) => Promise<void> | void}) {
+    for (let key in listeners) {
+      node.addEventListener(key, listeners[key]);
+    }
+
+    return {
+      destroy() {
+        for (let key in listeners) {
+          node.removeEventListener(key, listeners[key]);
+        }
+      }
+    }
+  }
+
   function getDefaultFieldProps(node: HTMLInputElement, name: string, type: string | undefined) {
     node.name = name;
     if (type) {
@@ -110,15 +124,10 @@ export function useForm(opts: FormOpts): FormData {
     }
     node.value = _values[name] || '';
 
-    node.addEventListener('input', handleInput);
-    node.addEventListener('blur', handleBlur);
-
-    return {
-      destroy() {
-        node.removeEventListener('input', handleInput);
-        node.removeEventListener('blur', handleBlur);
-      }
-    }
+    return attachListeners(node, {
+      input: handleInput,
+      blur: handleBlur
+    })
   }
   
   function getCheckboxFieldProps(node: HTMLInputElement, name: string, value: any) {
@@ -131,15 +140,10 @@ export function useForm(opts: FormOpts): FormData {
       node.checked = initial.includes(value);
     }
 
-    node.addEventListener('input', handleCheckbox);
-    node.addEventListener('blur', handleBlur);
-
-    return {
-      destroy() {
-        node.removeEventListener('input', handleCheckbox);
-        node.removeEventListener('blur', handleBlur);
-      }
-    }
+    return attachListeners(node, {
+      input: handleCheckbox,
+      blue: handleBlur
+    })
   }
 
   function getRadioFieldProps(node: HTMLInputElement, name: string, value: any) {
@@ -150,43 +154,29 @@ export function useForm(opts: FormOpts): FormData {
     const initial = getIn(_values, name);
     node.checked = initial === value;
 
-    node.addEventListener('input', handleRadio);
-    node.addEventListener('blur', handleBlur);
-
-    return {
-      destroy() {
-        node.removeEventListener('input', handleRadio);
-        node.removeEventListener('blur', handleBlur);
-      }
-    }
+    return attachListeners(node, {
+      input: handleRadio,
+      blur: handleBlur
+    });
   }
 
-  function getSelectFieldProps(node: HTMLSelectElement, name: string, binding?: Writable<any>) {
+  function getSelectFieldProps(node: HTMLSelectElement, name: string) {
     const initial = getIn(_values, name);
-    node.value = initial;
-    let unsubscribe: () => void;
-    if (binding) {
-      // binding is created in Field
-      unsubscribe = binding.subscribe(async val => {
-        const next = setIn(_values, name, val);
-        values.set(next);
-        runValidations(next);
-      });
-    } else {
-      // only works for string values.
-      // node.addEventListener('input', handleInput);
-      node.addEventListener('input', handleSelect);
-    }
-
-    node.addEventListener('blur', handleBlur);
-
-    return {
-      destroy() {
-        if (unsubscribe) unsubscribe();
-        node.removeEventListener('input', handleSelect);
-        node.removeEventListener('blur', handleBlur);
+    
+    // node.value = initial;
+    let selectedIndex = node.selectedIndex;
+    for (let i = 0; i < node.options.length; i++) {
+      if (initial === getNodeValue(node.options[i])) {
+        selectedIndex = i;
+        break;
       }
     }
+    node.selectedIndex = selectedIndex;
+
+    return attachListeners(node, {
+      input: handleSelect,
+      blur: handleBlur
+    });
   }
 
   function getValue(name: string) {
@@ -195,12 +185,11 @@ export function useForm(opts: FormOpts): FormData {
 
   function getFieldProps(
     node: HTMLInputElement | HTMLSelectElement, 
-    field: string | { name: string, type?: string, value?: any, binding?: Writable<any> }
+    field: string | { name: string, type?: string, value?: any }
   ) {
     let name: string;
     let type: string | undefined = getNodeType(node);
     let value;
-    let binding: Writable<any> | undefined;
     if (typeof field === 'string') {
       name = field;
       value = node.value;
@@ -208,7 +197,6 @@ export function useForm(opts: FormOpts): FormData {
       name = field.name;
       type = field.type ? field.type : type;
       value = field.value;
-      binding = field.binding;
     }
     node.name = name;
 
@@ -217,8 +205,7 @@ export function useForm(opts: FormOpts): FormData {
     } else if (type === 'radio') {
       return getRadioFieldProps(node as HTMLInputElement, name, value);
     } else if (type === 'select') {
-      // if (!binding) throw new Error(`Binding required for ${name} element.`);
-      return getSelectFieldProps(node as HTMLSelectElement, name, binding);
+      return getSelectFieldProps(node as HTMLSelectElement, name);
     } else {
       return getDefaultFieldProps(node as HTMLInputElement, name, type);
     }
