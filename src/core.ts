@@ -103,9 +103,11 @@ export function useForm(opts: FormOpts): FormData {
     runValidations(_values)
   }
 
-  function getTextFieldProps(node: HTMLInputElement, name: string, type: string) {
+  function getDefaultFieldProps(node: HTMLInputElement, name: string, type: string | undefined) {
     node.name = name;
-    node.type = type;
+    if (type) {
+      node.type = type;
+    }
     node.value = _values[name] || '';
 
     node.addEventListener('input', handleInput);
@@ -204,15 +206,13 @@ export function useForm(opts: FormOpts): FormData {
       value = node.value;
     } else {
       name = field.name;
-      type = field.type;
+      type = field.type ? field.type : type;
       value = field.value;
       binding = field.binding;
     }
     node.name = name;
 
-    if (type === 'text' || type === 'email' || type === 'password') {
-      return getTextFieldProps(node as HTMLInputElement, name, type);
-    } else if (type === 'checkbox') {
+    if (type === 'checkbox') {
       return getCheckboxFieldProps(node as HTMLInputElement, name, value);
     } else if (type === 'radio') {
       return getRadioFieldProps(node as HTMLInputElement, name, value);
@@ -220,7 +220,7 @@ export function useForm(opts: FormOpts): FormData {
       // if (!binding) throw new Error(`Binding required for ${name} element.`);
       return getSelectFieldProps(node as HTMLSelectElement, name, binding);
     } else {
-      throw new Error(`Unknown type: ${type}`);
+      return getDefaultFieldProps(node as HTMLInputElement, name, type);
     }
   }
 

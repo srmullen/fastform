@@ -26,16 +26,7 @@
   }
 </script>
 
-{#if type === 'text' || type === 'email' || type === 'password'}
-  <input 
-    {id}
-    class={classNames}
-    {type}
-    {placeholder}
-    {...$$restProps}
-    use:form.getFieldProps={name}
-  />
-{:else if type === 'checkbox' || type === 'radio'}
+{#if type === 'checkbox' || type === 'radio'}
   <input 
     {id}
     class={classNames}
@@ -54,4 +45,13 @@
   >
     <slot />
   </select>
+{:else}
+  <input 
+    {id}
+    class={classNames}
+    {type}
+    {placeholder}
+    {...$$restProps}
+    use:form.getFieldProps={name}
+  />
 {/if}
