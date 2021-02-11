@@ -16,10 +16,16 @@
 
   setContext(FORM, { form });
 
-  const { values: valuesStore, errors: errorsStore, touched: touchedStore } = form;
+  const { 
+    values: valuesStore, 
+    errors: errorsStore, 
+    touched: touchedStore, 
+    submitting: submittingStore 
+  } = form;
   $: values = $valuesStore;
   $: errors = $errorsStore;
   $: touched = $touchedStore;
+  $: submitting = $submittingStore;
 </script>
 
 <slot 
@@ -27,4 +33,5 @@
   values={values}
   touched={touched}
   errors={errors}
+  {submitting}
 />

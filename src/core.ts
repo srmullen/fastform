@@ -8,6 +8,7 @@ export function useForm(opts: FormOpts): FormData {
   const values = writable<Values>(opts.initialValues ? opts.initialValues : {});
   const errors = writable<Errors>({});
   const touched = writable<Touched>({});
+  const submitting = writable(false);
 
   let _values: Values;
   let _errors: Errors;
@@ -43,13 +44,15 @@ export function useForm(opts: FormOpts): FormData {
 
   const handleSubmit = async () => {
     let errors: Errors = {};
+    submitting.set(true);
     if (opts.validate) {
       errors = await opts.validate(_values);
     }
 
     if (opts.onSubmit) {
-      opts.onSubmit(_values, errors);
+      await opts.onSubmit(_values, errors);
     }
+    submitting.set(false);
   }
 
   const handleBlur = (event: Event) => {
@@ -229,7 +232,8 @@ export function useForm(opts: FormOpts): FormData {
     getFieldProps,
     validate: opts.validate,
     getValue,
-    value
+    value,
+    submitting
   }
 
   return form;
@@ -328,18 +332,6 @@ export function useField(
     throw new Error('useField must have a context');
   }
   const { form } = getContext<{ form: FormData }>(FORM);
-  
-  // let name: string;
-  // if (typeof field === 'string') {
-  //   name = field;
-  // } else {
-  //   name = field.name;
-  // }
-  // const {
-  //   name,
-  //   value,
-  //   type
-  // } = field;
 
   let _values: Values;
   let _errors: Errors;

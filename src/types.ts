@@ -26,8 +26,7 @@ export interface FormData {
   values: Writable<Values>;
   errors: Writable<Errors>;
   touched: Writable<Touched>;
-  // checkboxes: Map<HTMLInputElement, any>;
-  // radios: Map<HTMLInputElement, any>;
+  submitting: Writable<boolean>;
   valueMap: Map<HTMLElement, any>;
   handleSubmit: (event: Event) => Promise<unknown> | unknown;
   handleBlur: (event: Event) => Promise<any> | any;
