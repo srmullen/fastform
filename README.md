@@ -3,34 +3,40 @@ FastForm
 
 FastForm is a library that simplifies building complex forms in Svelte. It is largely based on the [Formik library](https://github.com/formium/formik) for React. It's goal is to centralize form logic, helping you create forms your users will love filling out! It is comprised of Components and Api hooks that you can use in whatever combination you prefer.
 
-Here's a minimal example.
+Examples
+--------
+
+```js
+// submissionform.js
+export function validate(values) {
+  const errors = {};
+
+  if (!values.email) {
+    errors.email = "Email required";
+  }
+
+  if (!values.password) {
+    errors.password = "Password required";
+  }
+
+  return errors;
+}
+
+export function onSubmit(values, errors) {
+  if (!Object.keys(errors).length) {
+    console.log(`Form submitted: ${values}`)
+  }
+}
+```
 
 ```html
+<!-- UsingComponents.svelte -->
 <script>
   import { FastForm, Form, Field } from 'fastform';
+  import { validate, onSubmit } from 'submissionform';
+</script>
 
-  function validate(values) {
-    const errors = {};
-
-    if (!values.email) {
-      errors.email = "Email required";
-    }
-
-    if (!values.password) {
-      errors.password = "Password required";
-    }
-
-    return errors;
-  }
-
-  function onSubmit(values, errors) {
-    if (!Object.keys(errors).length) {
-      console.log(`Form submitted: ${values}`)
-    }
-  }
-<script>
-
-<FastForm {onSubmit}>
+<FastForm {validate} {onSubmit}>
   <Form>
     <label for="email">Email</label>
     <Field id="email" name="email" type="email" />
@@ -43,6 +49,31 @@ Here's a minimal example.
     <button type="submit">Submit</button>
   </Form>
 </FastForm>
+```
+
+```html
+<!-- Using hooks -->
+<script>
+  import { useForm } from 'fastform';
+  import { validate, onSubmit } from 'submissionform';
+
+  const form = useForm({
+    validate,
+    onSubmit
+  });
+</script>
+
+<form on:submit|preventDefault={form.handleSubmit}>
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" use:form.props={'email'} />
+  <label for="password">Password</label>
+  <input id="password" type="password" use:form.props={'password'} />
+  <label>
+    <input name="notRobot" type="checkbox" use:form.props={'notRobot'} />
+    <span>I am not a robot</span>
+  </label>
+  <button type="submit">Submit</button>
+</form>
 ```
 
 Installation
