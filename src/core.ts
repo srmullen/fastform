@@ -1,5 +1,5 @@
 import { getContext, hasContext } from 'svelte';
-import { Writable, writable, derived } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import type { FormData, FormOpts, Values, Errors, Touched } from './types';
 import { FORM } from './contexts';
 import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
@@ -186,7 +186,7 @@ export function useForm(opts: FormOpts): FormData {
     return getIn(_values, name);
   }
 
-  function getFieldProps(
+  function props(
     node: HTMLInputElement | HTMLSelectElement, 
     field: string | { name: string, type?: string, value?: any }
   ) {
@@ -220,109 +220,39 @@ export function useForm(opts: FormOpts): FormData {
   }
 
   const form = {
+    // Stores
     values,
     errors,
     touched,
-    valueMap,
+    submitting,
+
+    // Event handlers
     handleSubmit,
     handleBlur,
     handleInput,
     handleCheckbox,
     handleRadio,
-    getFieldProps,
+
+    // Actions
+    props,
+    value,
+
+    // Misc.
     validate: opts.validate,
     getValue,
-    value,
-    submitting
+    valueMap
   }
 
   return form;
 }
 
-function useTextField(form: FormData, name: string) {}
-
-function useCheckboxField(form: FormData, name: string, val: any) {
-
-  let _values: Values;
-  let _errors: Errors;
-  let _touched: Touched;
-
-  form.values.subscribe(values => {
-    _values = values;
-  });
-
-  form.errors.subscribe(errors => {
-    _errors = errors;
-  });
-
-  form.touched.subscribe(touched => {
-    _touched = touched;
-  });
-
-  const valueStore = derived(form.values, $values => {
-    return getIn($values, name);
-  });
-
-  const value = {
-    subscribe: valueStore.subscribe,
-    async set(checked: boolean) {
-      form.values.update(previous => {
-        if (checked) {
-          const arr = getIn(previous, name) || [];
-          val = arr.concat(value);
-        } else {
-          const arr = getIn(previous, name) || [];
-          val = arr.filter((el: any) => el !== value);
-        }
-        return setIn(previous, name, val);
-      });
-
-      if (form.validate) {
-        form.errors.set(await form.validate(_values));
-      }
-    }
-  }
-
-  const errorStore = derived(form.errors, $errors => {
-    return $errors[name];
-  });
-
-  const error = {
-    subscribe: errorStore.subscribe,
-    set(err: any) {
-      form.errors.update(previous => {
-        return Object.assign({}, previous, { [name]: err });
-      });
-    }
-  };
-
-  const touchedStore = derived(form.touched, $touched => {
-    return $touched[name];
-  });
-
-  const touched = {
-    subscribe: touchedStore.subscribe,
-    set(touch: boolean) {
-      form.touched.update(previous => {
-        return Object.assign({}, previous, { [name]: touch });
-      });
-    }
-  };
-
-  function handleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    value.set(target.checked);
-  }
-
-  return {
-    value,
-    error,
-    touched,
-    name,
-    handleInput,
-    handleBlur: form.handleBlur,
-  };
-}
+/**************************************************************************************************/
+/**************************************************************************************************/
+/**************************************************************************************************/
+/**************************************************************************************************/
+/**************************************************************************************************/
+/**************************************************************************************************/
+/**************************************************************************************************/
 
 export function useField(
   field: { name: string, value?: any, type?: string }
@@ -353,22 +283,37 @@ export function useField(
     return getIn($values, field.name);
   });
 
-  const value = {
-    subscribe: valueStore.subscribe,
-    async set(val: any) {
-      form.values.update(previous => {
-        return Object.assign({}, previous, { [field.name]: val });
-      });
-
-      if (form.validate) {
-        form.errors.set(await form.validate(_values));
-      }
-    }
-    // update(fn: (val: any) => any) {
-    //   const previous =
-    //   fn()
-    // }
+  function value(node: HTMLElement, val: any) {
+    form.valueMap.set(node, val);
   }
+
+  value.subscribe = valueStore.subscribe;
+  value.set = async (val: any) => {
+    form.values.update(previous => {
+      return Object.assign({}, previous, { [field.name]: val });
+    });
+
+    if (form.validate) {
+      form.errors.set(await form.validate(_values));
+    }
+  }
+
+  // const value = {
+  //   subscribe: valueStore.subscribe,
+  //   async set(val: any) {
+  //     form.values.update(previous => {
+  //       return Object.assign({}, previous, { [field.name]: val });
+  //     });
+
+  //     if (form.validate) {
+  //       form.errors.set(await form.validate(_values));
+  //     }
+  //   }
+  //   // update(fn: (val: any) => any) {
+  //   //   const previous =
+  //   //   fn()
+  //   // }
+  // }
 
   const errorStore = derived(form.errors, $errors => {
     return $errors[field.name];
@@ -401,8 +346,8 @@ export function useField(
     value.set(target.value);
   }
 
-  function props(node: HTMLInputElement) {
-    return form.getFieldProps(node, { name: field.name, type: field.type, value: isObject(field) ? field.value : null });
+  function props(node: HTMLInputElement | HTMLSelectElement) {
+    return form.props(node, { name: field.name, type: field.type, value: isObject(field) ? field.value : null });
   }
 
   return {

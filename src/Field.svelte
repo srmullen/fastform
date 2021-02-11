@@ -16,12 +16,12 @@
     class={classNames}
     {type}
     {...$$restProps}
-    use:form.getFieldProps={{ name, type, value }}
+    use:form.props={{ name, type, value }}
   />
 {:else if type === 'select'}
   <select 
     class={classNames}
-    use:form.getFieldProps={{ name, type }}
+    use:form.props={{ name, type }}
     {...$$restProps}
   >
     <slot />
@@ -31,6 +31,6 @@
     class={classNames}
     {type}
     {...$$restProps}
-    use:form.getFieldProps={name}
+    use:form.props={name}
   />
 {/if}

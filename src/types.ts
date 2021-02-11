@@ -22,22 +22,29 @@ export interface Destoryable {
   destroy: (...args: any[]) => void;
 }
 
+export type ValidateFn = (values: Values) => Promise<Errors> | Errors;
+export type SubmitFn = (values: Values, errors: Errors) => Promise<void> | void;
+
 export interface FormData {
+  // Stores
   values: Writable<Values>;
   errors: Writable<Errors>;
   touched: Writable<Touched>;
   submitting: Writable<boolean>;
-  valueMap: Map<HTMLElement, any>;
+
+  // Actions
+  props: (node: HTMLInputElement | HTMLSelectElement, name: string | { name: string, type?: string, value?: any }) => Destoryable;
+  value: (node: HTMLElement, val: any) => void;
+
+  // Event handlers
   handleSubmit: (event: Event) => Promise<unknown> | unknown;
   handleBlur: (event: Event) => Promise<any> | any;
   handleInput: (event: Event) => Promise<unknown> | unknown;
   handleCheckbox: (event: Event) => Promise<void> | void;
   handleRadio: (event: Event) => Promise<void> | void;
-  getFieldProps: (node: HTMLInputElement | HTMLSelectElement, name: string | { name: string, type?: string, value?: any }) => Destoryable;
+
+  // Misc.
   getValue: (name: string) => any;
   validate?: ValidateFn;
-  value: (node: HTMLElement, val: any) => void;
+  valueMap: Map<HTMLElement, any>;
 }
-
-export type ValidateFn = (values: Values) => Promise<Errors> | Errors;
-export type SubmitFn = (values: Values, errors: Errors) => void;
