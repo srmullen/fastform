@@ -142,8 +142,8 @@ export function useForm(opts: FormOpts): FormData {
 
     return attachListeners(node, {
       input: handleCheckbox,
-      blue: handleBlur
-    })
+      blur: handleBlur
+    });
   }
 
   function getRadioFieldProps(node: HTMLInputElement, name: string, value: any) {

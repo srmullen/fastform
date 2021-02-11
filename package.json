@@ -21,10 +21,8 @@
   },
   "keywords": [
     "svelte",
-    "typescript",
-    "tailwind",
-    "snowpack",
-    "template"
+    "forms",
+    "typescript"
   ],
   "author": "Sean Mullen <sean@srmullen.com>",
   "license": "ISC",
