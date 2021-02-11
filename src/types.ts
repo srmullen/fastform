@@ -25,7 +25,7 @@ export interface Destoryable {
 export type ValidateFn = (values: Values) => Promise<Errors> | Errors;
 export type SubmitFn = (values: Values, errors: Errors) => Promise<void> | void;
 
-export interface FormData {
+export interface FormState {
   // Stores
   values: Writable<Values>;
   errors: Writable<Errors>;

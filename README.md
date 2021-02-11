@@ -52,7 +52,7 @@ export function onSubmit(values, errors) {
 ```
 
 ```html
-<!-- Using hooks -->
+<!-- UsingHooks.svelte -->
 <script>
   import { useForm } from 'fastform';
   import { validate, onSubmit } from 'submissionform';

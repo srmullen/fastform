@@ -1,10 +1,10 @@
 import { getContext, hasContext } from 'svelte';
 import { writable, derived } from 'svelte/store';
-import type { FormData, FormOpts, Values, Errors, Touched } from './types';
+import type { FormState, FormOpts, Values, Errors, Touched } from './types';
 import { FORM } from './contexts';
 import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
 
-export function useForm(opts: FormOpts): FormData {
+export function useForm(opts: FormOpts): FormState {
   const values = writable<Values>(opts.initialValues ? opts.initialValues : {});
   const errors = writable<Errors>({});
   const touched = writable<Touched>({});
@@ -261,7 +261,7 @@ export function useField(
   if (!hasContext(FORM)) {
     throw new Error('useField must have a context');
   }
-  const { form } = getContext<{ form: FormData }>(FORM);
+  const { form } = getContext<{ form: FormState }>(FORM);
 
   let _values: Values;
   let _errors: Errors;
@@ -297,23 +297,6 @@ export function useField(
       form.errors.set(await form.validate(_values));
     }
   }
-
-  // const value = {
-  //   subscribe: valueStore.subscribe,
-  //   async set(val: any) {
-  //     form.values.update(previous => {
-  //       return Object.assign({}, previous, { [field.name]: val });
-  //     });
-
-  //     if (form.validate) {
-  //       form.errors.set(await form.validate(_values));
-  //     }
-  //   }
-  //   // update(fn: (val: any) => any) {
-  //   //   const previous =
-  //   //   fn()
-  //   // }
-  // }
 
   const errorStore = derived(form.errors, $errors => {
     return $errors[field.name];
