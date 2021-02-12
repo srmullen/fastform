@@ -2,7 +2,10 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "src/**/*"
