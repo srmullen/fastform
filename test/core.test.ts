@@ -1,6 +1,7 @@
-import { useForm, useField } from '../src';
 import { get } from 'svelte/store';
 import userEvent from '@testing-library/user-event';
+import { useForm, useField } from '../src';
+import { wait } from './testingUtils';
 
 
 describe('useForm', () => {
@@ -13,6 +14,23 @@ describe('useForm', () => {
       const form = useForm({ initialValues });
       const values = get(form.values);
       expect(values).toEqual(initialValues);
+    });
+  });
+
+  describe('validate', () => {
+    test('it creates errors on form initialization', async () => {
+      const validate = (values) => {
+        const errors: { name?: string } = {};
+        if (!values.name) {
+          errors.name = 'required';
+        }
+        return errors;
+      }
+
+      const form = useForm({ validate });
+      await wait();
+      const errors = get(form.errors);
+      expect(errors.name).toEqual('required');
     });
   });
 

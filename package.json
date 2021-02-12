@@ -1,6 +1,6 @@
 {
   "name": "svelte-fastform",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Form management for Svelte",
   "svelte": "dist/index.js",
   "module": "dist/index.mjs",

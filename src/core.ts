@@ -5,7 +5,8 @@ import { FORM } from './contexts';
 import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
 
 export function useForm(opts: FormOpts = {}): FormState {
-  const values = writable<Values>(opts.initialValues ? opts.initialValues : {});
+  const initialValues = opts.initialValues ? opts.initialValues : {};
+  const values = writable<Values>(initialValues);
   const errors = writable<Errors>({});
   const touched = writable<Touched>({});
   const submitting = writable(false);
@@ -218,6 +219,8 @@ export function useForm(opts: FormOpts = {}): FormState {
   function value(node: HTMLElement, val: any) {
     valueMap.set(node, val);
   }
+
+  runValidations(initialValues);
 
   const form = {
     // Stores

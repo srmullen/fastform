@@ -23,7 +23,7 @@ export interface Destoryable {
 }
 
 export type ValidateFn = (values: Values) => Promise<Errors> | Errors;
-export type SubmitFn = (values: Values, errors: Errors) => Promise<void> | void;
+export type SubmitFn = (values: Values, errors: Errors) => Promise<unknown | undefined> | unknown | undefined;
 
 export interface FormState {
   // Stores
