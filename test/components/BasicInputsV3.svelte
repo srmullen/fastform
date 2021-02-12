@@ -10,7 +10,7 @@
     { value: 'product', title: "Product" },
     { value: 'lazyBum', title: "Lazy Bum" }
   ];
-  const awesomeCheckboxes = [{ text: 'this is awesome' }, { text: 'super cool' }];
+  // const awesomeCheckboxes = [{ text: 'this is awesome' }, { text: 'super cool' }];
 
 
   export let initialValues = { 
@@ -41,7 +41,6 @@
   {validate}
   {onSubmit}
   bind:form
-  let:form
   let:values
   let:touched
   let:errors
