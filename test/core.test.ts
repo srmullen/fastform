@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { useForm, useField } from '../src';
 import { wait } from './testingUtils';
 
-
 describe('useForm', () => {
   describe('initialValues', () => {
     test('it sets initial values', () => {
@@ -31,6 +30,27 @@ describe('useForm', () => {
       await wait();
       const errors = get(form.errors);
       expect(errors.name).toEqual('required');
+    });
+  });
+
+  describe('isValid', () => {
+    test('it is true if no validate', () => {
+      const form = useForm();
+      expect(get(form.isValid)).toBe(true);
+    });
+
+    test('it is true if errors is undefined', () => {
+      const form = useForm();
+      form.errors.set(undefined);
+      expect(get(form.isValid)).toBe(true);
+    });
+
+    test('it is false if initial state has errors', async () => {
+      const form = useForm({
+        validate: () => ({ thisisanerror: 'error error error' }),
+      });
+      await wait(); // validation happens asynchronously 
+      expect(get(form.isValid)).toBe(false);
     });
   });
 

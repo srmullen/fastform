@@ -116,7 +116,15 @@ function testForm(SignupForm: any, label = '') {
         validate
       });
 
-      expect(get(component.form.errors)).toEqual({});
+      await wait();
+
+      expect(get(component.form.errors)).toEqual({
+        awesome: 'Required',
+        email: 'Required',
+        jobType: 'Required',
+        password: 'Required',
+        userName: 'Required'
+      });
 
       const userName = getByTestId('userName') as HTMLInputElement;
       const password = getByTestId('password') as HTMLInputElement;

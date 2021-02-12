@@ -1,6 +1,6 @@
 {
   "name": "svelte-fastform",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Form management for Svelte",
   "svelte": "dist/index.js",
   "module": "dist/index.mjs",
@@ -16,7 +16,7 @@
     "test:watch": "jest --watchAll",
     "check": "svelte-check --diagnostic-sources \"js,svelte\" --ignore \"test\"",
     "check:watch": "svelte-check --watch --diagnostic-sources \"js,svelte\" --ignore \"test\"",
-    "prepare": "npm run check",
+    "prepare": "npm run check && npm run build",
     "prebuild": "rimraf ./dist",
     "build": "rollup -c"
   },

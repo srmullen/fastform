@@ -7,9 +7,19 @@ import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
 export function useForm(opts: FormOpts = {}): FormState {
   const initialValues = opts.initialValues ? opts.initialValues : {};
   const values = writable<Values>(initialValues);
-  const errors = writable<Errors>({});
+  const errors = writable<Errors | undefined>(undefined);
   const touched = writable<Touched>({});
   const submitting = writable(false);
+  const isValid = derived(errors, (errors$) => {
+    if (!opts.validate) {
+      return true;
+    }
+    if (errors$) {
+      return !Object.values(errors$).some(err => err);
+    } else {
+      return undefined;
+    }
+  });
 
   let _values: Values;
   let _errors: Errors;
@@ -228,6 +238,7 @@ export function useForm(opts: FormOpts = {}): FormState {
     errors,
     touched,
     submitting,
+    isValid,
 
     // Event handlers
     handleSubmit,
