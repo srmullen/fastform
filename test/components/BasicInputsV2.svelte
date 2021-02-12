@@ -3,8 +3,8 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import { FastForm } from '../src';
-  import type { FormState, ValidateFn, Values, Errors  } from '../src/types';
+  import { FastForm } from '../../src';
+  import type { FormState, ValidateFn, Values, Errors  } from '../../src/types';
 
   export let initialValues = { userName: '', password: '', email: '', awesome: [], food: '' };
   export let validate: ValidateFn;

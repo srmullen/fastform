@@ -3,10 +3,10 @@ import { get } from 'svelte/store';
 import type { Values, Errors } from '../src/types';
 import { render, fireEvent } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
-import BasicInputsV1 from './BasicInputsV1.svelte';
-import BasicInputsV2 from './BasicInputsV2.svelte';
-import BasicInputsV3 from './BasicInputsV3.svelte';
-import BasicInputsV4 from './BasicInputsV4.svelte';
+import BasicInputsV1 from './components/BasicInputsV1.svelte';
+import BasicInputsV2 from './components/BasicInputsV2.svelte';
+import BasicInputsV3 from './components/BasicInputsV3.svelte';
+import BasicInputsV4 from './components/BasicInputsV4.svelte';
 
 testForm(BasicInputsV1, 'V1');
 testForm(BasicInputsV2, 'V2');

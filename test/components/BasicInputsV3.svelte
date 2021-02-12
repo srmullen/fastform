@@ -1,8 +1,8 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import { FastForm, Form, Field, ErrorMessage } from '../src';
-  import type { ValidateFn, FormState, Values, Errors } from '../src/types';
+  import { FastForm, Form, Field, ErrorMessage } from '../../src';
+  import type { ValidateFn, FormState, Values, Errors } from '../../src/types';
 
   const jobTypes = [
     { value: 'designer', title: "Designer" },

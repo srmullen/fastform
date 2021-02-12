@@ -1,8 +1,8 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import { FastForm } from '../src';
-  import type { FormState } from '../src/types';
+  import { FastForm } from '../../src';
+  import type { FormState } from '../../src/types';
 
   // For testing purposes only.
   export let form: FormState | undefined = undefined;

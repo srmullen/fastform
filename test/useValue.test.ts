@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { fireEvent, render } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
-import UseValue from './UseValue.svelte';
+import UseValue from './components/UseValue.svelte';
 
 describe('use:form.value', () => {
   describe('select element', () => {

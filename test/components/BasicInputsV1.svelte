@@ -5,10 +5,10 @@
 <svelte:options accessors />
 
 <script lang="ts">
-  import type { Errors, Values } from '../src/types';
-  import { useForm } from '../src';
+  import type { Errors, Values } from '../../src/types';
+  import { useForm } from '../../src';
   import * as Yup from 'Yup';
-  import { getIn, setIn } from '../src/utils';
+  import { getIn, setIn } from '../../src/utils';
 
   export let initialValues = { 
     userName: '', 

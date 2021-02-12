@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { useField } from '../src';
-  import type { FormState } from '../src/types';
+  import { useField } from '../../src';
+  import type { FormState } from '../../src/types';
 
   export let form: FormState;
 
