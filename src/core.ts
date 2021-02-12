@@ -4,7 +4,7 @@ import type { FormState, FormOpts, Values, Errors, Touched } from './types';
 import { FORM } from './contexts';
 import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
 
-export function useForm(opts: FormOpts): FormState {
+export function useForm(opts: FormOpts = {}): FormState {
   const values = writable<Values>(opts.initialValues ? opts.initialValues : {});
   const errors = writable<Errors>({});
   const touched = writable<Touched>({});
@@ -254,14 +254,20 @@ export function useForm(opts: FormOpts): FormState {
 /**************************************************************************************************/
 /**************************************************************************************************/
 
-export function useField(
-  field: { name: string, value?: any, type?: string }
-) {
-
+export function getFormInContext() {
   if (!hasContext(FORM)) {
     throw new Error('useField must have a context');
   }
   const { form } = getContext<{ form: FormState }>(FORM);
+  return form;
+}
+
+export function useField(
+  field: { name: string, value?: any, type?: string },
+  getForm = getFormInContext
+) {
+
+  const form = getForm();
 
   let _values: Values;
   let _errors: Errors;
@@ -296,6 +302,9 @@ export function useField(
     if (form.validate) {
       form.errors.set(await form.validate(_values));
     }
+  }
+  value.update = (updater: (val: any) => any) => {
+    value.set(updater(_values[field.name]));
   }
 
   const errorStore = derived(form.errors, $errors => {
