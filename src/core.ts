@@ -126,7 +126,7 @@ export function useForm(opts: FormOpts = {}): FormState {
     if (type && type !== 'textarea') {
       node.type = type;
     }
-    node.value = _values[name] || '';
+    node.value = getIn(_values, name) || '';
 
     return attachListeners(node, {
       input: handleInput,
