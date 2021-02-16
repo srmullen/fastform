@@ -4,17 +4,17 @@
 
   export let form: FormState;
 
-  const userName = useField({ name: 'userName' });
-  const email = useField({ name: 'email' });
-  const password = useField({ name: 'password' });
-  const jobType = useField({ name: 'jobType' });
+  const userName = useField('userName');
+  const email = useField('email');
+  const password = useField('password');
+  const jobType = useField('jobType');
   const awesome = useField({ name: 'awesome', value: "awesome!" });
   const cool = useField({ name: 'awesome', value: 'cool' });
   const pizza = useField({ name: 'food', value: 'pizza' });
   const iceCream = useField({ name: 'food', value: 'ice cream' });
-  const mynumber = useField({ name: 'mynumber' });
-  const startDate = useField({ name: 'startDate' });
-  const myrange = useField({ name: 'myrange' });
+  const mynumber = useField('mynumber');
+  const startDate = useField('startDate');
+  const myrange = useField('myrange');
 </script>
 
 <div>

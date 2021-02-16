@@ -20,14 +20,12 @@
     values: valuesStore, 
     errors: errorsStore, 
     touched: touchedStore, 
-    submitting: submittingStore,
-    isValid: validStore
+    submitting: submittingStore
   } = form;
   $: values = $valuesStore;
   $: errors = $errorsStore;
   $: touched = $touchedStore;
   $: submitting = $submittingStore;
-  $: isValid = $validStore;
 </script>
 
 <slot 
@@ -36,5 +34,4 @@
   {touched}
   {errors}
   {submitting}
-  {isValid}
 />

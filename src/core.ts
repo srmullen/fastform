@@ -7,19 +7,9 @@ import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
 export function useForm(opts: FormOpts = {}): FormState {
   const initialValues = opts.initialValues ? opts.initialValues : {};
   const values = writable<Values>(initialValues);
-  const errors = writable<Errors | undefined>(undefined);
+  const errors = writable<Errors>({});
   const touched = writable<Touched>({});
   const submitting = writable(false);
-  const isValid = derived(errors, (errors$) => {
-    if (!opts.validate) {
-      return true;
-    }
-    if (errors$) {
-      return !Object.values(errors$).some(err => err);
-    } else {
-      return undefined;
-    }
-  });
 
   let _values: Values;
   let _errors: Errors;
@@ -238,7 +228,6 @@ export function useForm(opts: FormOpts = {}): FormState {
     errors,
     touched,
     submitting,
-    isValid,
 
     // Event handlers
     handleSubmit,
@@ -268,18 +257,25 @@ export function useForm(opts: FormOpts = {}): FormState {
 /**************************************************************************************************/
 /**************************************************************************************************/
 
-export function getFormInContext() {
-  if (!hasContext(FORM)) {
+export function getFormInContext(context=FORM) {
+  if (!hasContext(context)) {
     throw new Error('useField must have a context');
   }
-  const { form } = getContext<{ form: FormState }>(FORM);
+  const { form } = getContext<{ form: FormState }>(context);
   return form;
 }
 
 export function useField(
-  field: { name: string, value?: any, type?: string },
+  field: string | { name: string, value?: any, type?: string },
   getForm = getFormInContext
 ) {
+
+  let input: { name: string, value?: any, type?: string };
+  if (typeof field === 'string') {
+    input = { name: field };
+  } else {
+    input = field;
+  }
 
   const form = getForm();
 
@@ -300,7 +296,7 @@ export function useField(
   });
 
   const valueStore = derived(form.values, $values => {
-    return getIn($values, field.name);
+    return getIn($values, input.name);
   });
 
   function value(node: HTMLElement, val: any) {
@@ -310,7 +306,7 @@ export function useField(
   value.subscribe = valueStore.subscribe;
   value.set = async (val: any) => {
     form.values.update(previous => {
-      return Object.assign({}, previous, { [field.name]: val });
+      return Object.assign({}, previous, { [input.name]: val });
     });
 
     if (form.validate) {
@@ -318,32 +314,38 @@ export function useField(
     }
   }
   value.update = (updater: (val: any) => any) => {
-    value.set(updater(_values[field.name]));
+    value.set(updater(_values[input.name]));
   }
 
   const errorStore = derived(form.errors, $errors => {
-    return $errors[field.name];
+    return $errors[input.name];
   });
 
   const error = {
     subscribe: errorStore.subscribe,
     set(err: any) {
       form.errors.update(previous => {
-        return Object.assign({}, previous, { [field.name]: err });
+        return Object.assign({}, previous, { [input.name]: err });
       });
+    },
+    update(updater: (err: any) => any) {
+      error.set(updater(_errors[input.name]));
     }
   };
 
   const touchedStore = derived(form.touched, $touched => {
-    return $touched[field.name];
+    return $touched[input.name];
   });
 
   const touched = {
     subscribe: touchedStore.subscribe,
     set(touch: boolean) {
       form.touched.update(previous => {
-        return Object.assign({}, previous, { [field.name]: touch });
+        return Object.assign({}, previous, { [input.name]: touch });
       });
+    },
+    update(updater: (touch: boolean) => boolean) {
+      touched.set(updater(_touched[input.name]));
     }
   };
 
@@ -353,14 +355,14 @@ export function useField(
   }
 
   function props(node: HTMLInputElement | HTMLSelectElement) {
-    return form.props(node, { name: field.name, type: field.type, value: isObject(field) ? field.value : null });
+    return form.props(node, { name: input.name, type: input.type, value: isObject(field) ? field.value : null });
   }
 
   return {
     value,
     error,
     touched,
-    name: field.name,
+    name: input.name,
     handleInput,
     handleBlur: form.handleBlur,
     props

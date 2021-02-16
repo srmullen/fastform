@@ -3,6 +3,17 @@ FastForm
 
 FastForm is a library that simplifies building complex forms in Svelte. It is largely based on the [Formik library](https://github.com/formium/formik) for React. It's goal is to centralize form logic, helping you create forms your users will love filling out! It is comprised of Components and Api hooks that you can use in whatever combination you prefer.
 
+[See it in action](https://codesandbox.io/s/useform-login-0jge7?file=/App.svelte)
+
+[Contact form example](https://codesandbox.io/s/usefield-contact-cq7bc?file=/ContactForm.svelte)
+
+Benefits
+-----
+
+- Allows any data type to be associated with an input.
+- Ability to create your own input types.
+- Allow nested paths.
+
 Examples
 --------
 
@@ -57,19 +68,19 @@ export function onSubmit(values, errors) {
   import { useForm } from 'fastform';
   import { validate, onSubmit } from 'submissionform';
 
-  const form = useForm({
+  const { handleSubmit, props } = useForm({
     validate,
     onSubmit
   });
 </script>
 
-<form on:submit|preventDefault={form.handleSubmit}>
+<form on:submit|preventDefault={handleSubmit}>
   <label for="email">Email</label>
-  <input id="email" name="email" type="email" use:form.props={'email'} />
+  <input id="email" name="email" type="email" use:props={'email'} />
   <label for="password">Password</label>
-  <input id="password" type="password" use:form.props={'password'} />
+  <input id="password" type="password" use:props={'password'} />
   <label>
-    <input name="notRobot" type="checkbox" use:form.props={'notRobot'} />
+    <input name="notRobot" type="checkbox" use:props={'notRobot'} />
     <span>I am not a robot</span>
   </label>
   <button type="submit">Submit</button>
@@ -80,6 +91,17 @@ Installation
 ------------
 
 `npm install --save-dev fastform`
+
+Api
+---
+
+### useForm
+
+Creates an object that tracks the state of the form. It has stores for tracking `values`, `errors`, `touched` and `submitting` state. It has a `props` action that attached all required listeners to an input. The `value` action attached arbitrary data to an element (ex. a radio button can have an object as a value rather than just a string).
+
+### useField
+
+`useField` creates a field on a form. It returns an object that has `value`, `error` and `touched` stores. These stores refer to just the specific field. Calling `set` or `update` on them will also change the state of the form stores. The field object also returns `props` and `value` actions that work the same as the form object.
 
 Components
 ----------
@@ -107,10 +129,3 @@ Field is a component that handles configuring inputs for your form.
 - name: [Required]
 - type: [default: 'text]
 - value: A value that will be associated with the input. Useful for checkbox and radio input types.
-
-Api
----
-
-### useForm
-
-### useField

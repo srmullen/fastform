@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 import userEvent from '@testing-library/user-event';
 import { useForm, useField } from '../src';
+import type { Values } from '../src/types';
 import { wait } from './testingUtils';
 
 describe('useForm', () => {
@@ -18,7 +19,7 @@ describe('useForm', () => {
 
   describe('validate', () => {
     test('it creates errors on form initialization', async () => {
-      const validate = (values) => {
+      const validate = (values: Values) => {
         const errors: { name?: string } = {};
         if (!values.name) {
           errors.name = 'required';
@@ -30,27 +31,6 @@ describe('useForm', () => {
       await wait();
       const errors = get(form.errors);
       expect(errors.name).toEqual('required');
-    });
-  });
-
-  describe('isValid', () => {
-    test('it is true if no validate', () => {
-      const form = useForm();
-      expect(get(form.isValid)).toBe(true);
-    });
-
-    test('it is true if errors is undefined', () => {
-      const form = useForm();
-      form.errors.set(undefined);
-      expect(get(form.isValid)).toBe(true);
-    });
-
-    test('it is false if initial state has errors', async () => {
-      const form = useForm({
-        validate: () => ({ thisisanerror: 'error error error' }),
-      });
-      await wait(); // validation happens asynchronously 
-      expect(get(form.isValid)).toBe(false);
     });
   });
 
@@ -143,6 +123,45 @@ describe('useField', () => {
       expect(form.getValue('number')).toEqual(1);
       field.value.update(n => n + 4);
       expect(form.getValue('number')).toEqual(5);
+    });
+  });
+
+  describe('error', () => {
+    test('error.set updates form.errors', () => {
+      const form = useForm();
+      const field = useField('errorfield', () => form);
+      expect(get(form.errors).errorfield).toBeUndefined();
+      field.error.set('field error');
+      expect(get(form.errors).errorfield).toEqual('field error');
+    });
+
+    test('error.update updates form.errors', () => {
+      const form = useForm();
+      const field = useField('errorfield', () => form);
+      expect(get(form.errors).errorfield).toBeUndefined();
+      field.error.set(['errors', 1]);
+      field.error.update(([str, count]) => [str, count + 1]);
+      expect(get(form.errors).errorfield).toEqual(['errors', 2]);
+    });
+  });
+
+  describe('touched', () => {
+    test('touched.set updates form.touched', () => {
+      const form = useForm();
+      const field = useField('touchme', () => form);
+      expect(get(form.touched).touchme).toBeUndefined();
+      field.touched.set(true);
+      expect(get(form.touched).touchme).toBeTruthy();
+    });
+
+    test('touched.update updates form.touched', () => {
+      const form = useForm();
+      const field = useField('touchme', () => form);
+      expect(get(form.touched).touchme).toBeUndefined();
+      field.touched.set(true);
+      expect(get(form.touched).touchme).toBe(true);
+      field.touched.update(prev => !prev);
+      expect(get(form.touched).touchme).toBe(false);
     });
   });
 });

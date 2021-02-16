@@ -31,7 +31,6 @@ export interface FormState {
   errors: Writable<Errors>;
   touched: Writable<Touched>;
   submitting: Writable<boolean>;
-  isValid: Readable<boolean>;
 
   // Actions
   props: (node: HTMLInputElement | HTMLSelectElement, name: string | { name: string, type?: string, value?: any }) => Destoryable;
