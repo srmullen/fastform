@@ -10,7 +10,7 @@ export const isInteger = (obj: any): boolean =>
 export const isArray = (obj: any): obj is Array<any> =>
   Array.isArray(obj);
 
-export function getNodeType(node: HTMLInputElement | HTMLSelectElement): string {
+export function getNodeType(node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): string {
   if (node instanceof HTMLSelectElement) {
     return 'select';
   } else {

@@ -123,7 +123,7 @@ export function useForm(opts: FormOpts = {}): FormState {
 
   function getDefaultFieldProps(node: HTMLInputElement, name: string, type: string | undefined) {
     node.name = name;
-    if (type) {
+    if (type && type !== 'textarea') {
       node.type = type;
     }
     node.value = _values[name] || '';
@@ -131,7 +131,7 @@ export function useForm(opts: FormOpts = {}): FormState {
     return attachListeners(node, {
       input: handleInput,
       blur: handleBlur
-    })
+    });
   }
   
   function getCheckboxFieldProps(node: HTMLInputElement, name: string, value: any) {
@@ -188,7 +188,7 @@ export function useForm(opts: FormOpts = {}): FormState {
   }
 
   function props(
-    node: HTMLInputElement | HTMLSelectElement, 
+    node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, 
     field: string | { name: string, type?: string, value?: any }
   ) {
     let name: string;
