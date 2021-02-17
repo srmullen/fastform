@@ -33,7 +33,7 @@ export interface FormState {
   submitting: Writable<boolean>;
 
   // Actions
-  props: (node: HTMLInputElement | HTMLSelectElement, name: string | { name: string, type?: string, value?: any }) => Destoryable;
+  props: (node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, name: string | { name: string, type?: string, value?: any }) => Destoryable;
   value: (node: HTMLElement, val: any) => void;
 
   // Event handlers

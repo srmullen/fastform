@@ -354,7 +354,7 @@ export function useField(
     value.set(target.value);
   }
 
-  function props(node: HTMLInputElement | HTMLSelectElement) {
+  function props(node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) {
     return form.props(node, { name: input.name, type: input.type, value: isObject(field) ? field.value : null });
   }
 
