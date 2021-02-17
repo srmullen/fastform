@@ -2,7 +2,7 @@ import { getContext, hasContext } from 'svelte';
 import { writable, derived } from 'svelte/store';
 import type { FormState, FormOpts, Values, Errors, Touched } from './types';
 import { FORM } from './contexts';
-import { getIn, setIn, isArray, isObject, getNodeType } from './utils';
+import { getIn, setIn, isArray, isObject, getNodeType, exists } from './utils';
 
 export function useForm(opts: FormOpts = {}): FormState {
   const initialValues = opts.initialValues ? opts.initialValues : {};
@@ -126,7 +126,9 @@ export function useForm(opts: FormOpts = {}): FormState {
     if (type && type !== 'textarea') {
       node.type = type;
     }
-    node.value = getIn(_values, name) || '';
+
+    const initialValue = getIn(_values, name);
+    node.value = exists(initialValue) ? initialValue : '';
 
     return attachListeners(node, {
       input: handleInput,

@@ -10,6 +10,11 @@ export const isInteger = (obj: any): boolean =>
 export const isArray = (obj: any): obj is Array<any> =>
   Array.isArray(obj);
 
+// Returns true if value is not undefined or null.
+export const exists = (val: any): boolean => {
+  return val !== undefined && val !== null;
+}
+
 export function getNodeType(node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): string {
   if (node instanceof HTMLSelectElement) {
     return 'select';
