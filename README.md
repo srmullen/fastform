@@ -1,11 +1,11 @@
-FastForm
-========
+svelte-fastform
+===============
 
 FastForm is a library that simplifies building complex forms in Svelte. It is largely based on the [Formik library](https://github.com/formium/formik) for React. It's goal is to centralize form logic, helping you create forms your users will love filling out! It is comprised of Components and Api hooks that you can use in whatever combination you prefer.
 
 [See it in action](https://codesandbox.io/s/useform-login-0jge7?file=/App.svelte)
 
-[Contact form example](https://codesandbox.io/s/usefield-contact-cq7bc?file=/ContactForm.svelte)
+[Contact form example](https://codesandbox.io/s/usefield-contact-cq7bc?file=/App.svelte)
 
 Benefits
 -----
